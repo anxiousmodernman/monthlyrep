@@ -1,7 +1,6 @@
 import unittest
 from profile_completion import *
 from globals import *
-import pandas as pd
 
 class ProfileCompletion(unittest.TestCase):
 
