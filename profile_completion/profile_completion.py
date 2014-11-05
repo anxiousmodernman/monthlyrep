@@ -1,5 +1,6 @@
 import pandas as pd
 from globals import *
+from shared import *
 
 
 def load_data(data_file, fields_file):
@@ -30,25 +31,32 @@ def total_subs_with_all(df):
     return df
 
 
-def sum_stats(df):
-    subs_all = df["TotalSubs"].sum() / df["ALLSUBSALL"].sum()
-    profile_completion = df['TotalDataPoints'].sum()/df["denom"].sum()
-    return c(subs_all, profile_completion)
+def sum_stats(df, text):
+    subs_all = float(df["ALLSUBSALL"].sum())/df["Total Subs"].sum()
+    profile_completion = float(df['TotalDataPoints'].sum())/df["denom"].sum()
+    return pd.Series([subs_all, profile_completion], index=['Subs with All', 'Profile Completion'], name=text)
 
-
-def subset_briefs(df):
-    df['Brief Tags'] = df['Brief Tags'].fillna("Undefined")
-    sub_ad = df[df['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo.*)")]
-    sub_ed = df[df['Primary Sub-category Category'].str.contains("Education")]
-    sub_hc = df[df['Primary Sub-category Category'].str.contains("Health Care")]
-    sub_ad_less = sub_ad[~sub_ad['Primary Sub-category Category'].str.contains("(Health Care|Education)")]
-    return sub_ad, sub_ed, sub_hc, sub_ad_less
 
 
 if __name__ == '__main__':
     data = load_data(PC, FIELDS_PATH)
     check_fields(data)
     data = add_stats(data)
+    data = total_subs_with_all(data)
+    sub_ad = sub_ad(data)
+    sub_ed = subset(data, 'Primary Sub-category Category', "Education")
+    sub_hc = subset(data, 'Primary Sub-category Category', "Health Care")
+    sub_ad_less = less_subset(sub_ad, 'Primary Sub-category Category', "(Health Care|Education)")
+    tot = sum_stats(data, 'tot')
+    ad = sum_stats(sub_ad, 'ad')
+    ed = sum_stats(sub_ed, 'ed')
+    hc = sum_stats(sub_hc, 'hc')
+    ad_less = sum_stats(sub_ad_less, 'ad_less')
+    df = concat([tot, ad, ed, hc, ad_less])
+    df.to_excel(SHEET_PC_PROCESSED, sheet_name='sheet1', index=False)
+
+
+
 
 
 
