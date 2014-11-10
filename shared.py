@@ -7,7 +7,7 @@ def load(data_file):
 
 def sub_ad(df):
     df['Brief Tags'] = df['Brief Tags'].fillna("Undefined")
-    sub_ad = df[df['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo.*)")]
+    sub_ad = df[df['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo Enabled.*)")]
     return sub_ad
 
 
