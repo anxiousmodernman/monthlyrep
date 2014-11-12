@@ -14,12 +14,12 @@ def nonmain(df):
 
 
 def rates(df):
-    OpenRate = float(df['Opens'].sum())/df['Sent'].sum()
-    ClickRate = float(df['Clicks'].sum())/df['Opens'].sum()
-    Metrics = df[['Sent', 'Opens', 'Clicks', 'Starting Subs', 'Ending Subs']].sum()
-    data = pd.Series(Metrics).append(pd.Series([OpenRate, ClickRate]))
-    data = pd.DataFrame(data)
-    return data
+    open_rate = float(df['Opens'].sum())/df['Sent'].sum()
+    click_rate = float(df['Clicks'].sum())/df['Opens'].sum()
+    metrics = df[['Sent', 'Opens', 'Clicks', 'Starting Subs', 'Ending Subs']].sum()
+    return_data = pd.Series(metrics).append(pd.Series([open_rate, click_rate]))
+    return_data = pd.DataFrame(data)
+    return return_data
 
 
 
@@ -40,6 +40,6 @@ if __name__ == '__main__':
     # trials_points = rates(trials)
     # data = concat([ad_points, main_points, sr_points, ds_points, trials_points])
     data = concat([ad_points, main_points])
-    data.columns = ['Ad Based','Total']
+    data.columns = ['Ad Based', 'Total']
     data.to_excel(writer, 'openclick', index=True)
     writer.save()

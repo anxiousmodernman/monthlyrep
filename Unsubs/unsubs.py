@@ -11,6 +11,7 @@ def combine(df):
     data = pd.DataFrame(Metrics)
     return data
 
+
 def industry(df):
     data = df.groupby(['Primary Sub-category Category'])['Ending Subs'].sum()
     return data
