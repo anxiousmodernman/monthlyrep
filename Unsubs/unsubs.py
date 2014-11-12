@@ -1,4 +1,4 @@
-from globals import *
+from settings import *
 from shared import *
 import pandas as pd
 

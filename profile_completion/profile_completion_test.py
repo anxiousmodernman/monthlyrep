@@ -1,6 +1,6 @@
 import unittest
 from profile_completion import *
-from globals import *
+from settings import *
 
 class ProfileCompletion(unittest.TestCase):
 
