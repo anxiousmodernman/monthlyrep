@@ -20,5 +20,6 @@ class OpenClick(BaseReport):
 
 class Unsubscribes(BaseReport):
 
-    def __init__(self):
+    def __init__(self, data):
         super(Unsubscribes, self).__init__()
+        self._data = data
