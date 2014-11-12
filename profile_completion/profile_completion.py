@@ -1,5 +1,5 @@
 import pandas as pd
-from globals import *
+from settings import *
 from shared import *
 
 

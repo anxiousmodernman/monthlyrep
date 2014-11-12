@@ -1,4 +1,4 @@
-from globals import *
+from settings import *
 from shared import *
 import pandas as pd
 
@@ -10,6 +10,7 @@ def combine(df):
     Metrics = df[['Beginning Subs', 'Ending Subs', 'DeliveredMail', 'Total Unsubs', 'Inactive Removal - INACTIVE', 'Hard Bounce - INACTIVE', 'ActiveUnsubs', 'Other']].sum()
     data = pd.DataFrame(Metrics)
     return data
+
 
 def industry(df):
     data = df.groupby(['Primary Sub-category Category'])['Ending Subs'].sum()
