@@ -23,9 +23,9 @@ if __name__ == '__main__':
     data_summary = pd.DataFrame(concat([ad_points, main_points]))
     data_summary.columns = ['Ad Based','Total']
     data_industry = pd.DataFrame(industry(data))
-    # ad_industry = industry(ad)
-    # industry_summary = concat([data_industry, ad_industry])
+    ad_industry = pd.DataFrame(industry(ad))
+    industry_summary = concat([data_industry, ad_industry])
     # writer = ExcelWriter(SHEET_U_PROCESSED)
     data_summary.to_excel(writer, 'unsubs')
-    data_industry.to_excel(writer, 'industry')
+    industry_summary.to_excel(writer, 'industry', index = True)
     writer.save()

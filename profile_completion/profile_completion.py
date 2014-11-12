@@ -34,13 +34,6 @@ def total_subs_with_all(df):
 
 
 
-# def total_subs_with_all(df):
-#     ref = df.columns.get_loc("Subs with NO norm data")
-#     df['ALLSUBSALL'] = df.apply(lambda r: r[ref + r['NumFields']:ref + 6].sum(), axis=1) # for every row
-#     # find starting row (ref) and add the number of fields to it, then sum the difference from ref + 6
-#     return df
-
-
 def sum_stats(df, text):
     subs_all = float(df["ALLSUBSALL"].sum())/df["Total Subs"].sum()
     profile_completion = float(df['TotalDataPoints'].sum())/df["denom"].sum()
