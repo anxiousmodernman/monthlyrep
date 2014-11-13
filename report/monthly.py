@@ -1,25 +1,10 @@
+import pandas as pd
 
 
-class BaseReport(object):
+class Unsubscribes:
+    """Class to represent data and computations for monthly unsubscribes report.
+    """
 
-    def __init__(self):
-        self.name = 'Hello'
+    def __init__(self, file_input, sheet='Sheet1'):
+        self._data = pd.read_excel(file_input, sheet=sheet)
 
-
-class ProfileCompletion(BaseReport):
-
-    def __init__(self):
-        super(ProfileCompletion, self).__init__()
-
-
-class OpenClick(BaseReport):
-
-    def __init__(self):
-        super(OpenClick, self).__init__()
-
-
-class Unsubscribes(BaseReport):
-
-    def __init__(self, data):
-        super(Unsubscribes, self).__init__()
-        self._data = data

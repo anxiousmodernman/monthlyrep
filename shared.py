@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def load(data_file):
     data = pd.read_excel(data_file, 'Sheet1')
     return data
