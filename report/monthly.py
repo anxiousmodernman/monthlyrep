@@ -19,7 +19,6 @@ class Unsubscribes(ReportBase):
 
     def __init__(self, file_input, sheet='Sheet1'):
         super(Unsubscribes, self).__init__(file_input, sheet)
-        self._data = pd.read_excel(file_input, sheet=sheet)
 
     @property
     def total_unsubscribes(self):
