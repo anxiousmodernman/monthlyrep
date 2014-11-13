@@ -11,3 +11,15 @@ class TestUnsubReport(unittest.TestCase):
 
         # Here we are testing that test_report is an instance of class Unsubscribes
         self.assertIsInstance(test_report, Unsubscribes, msg="Should be an instance of class Unsubscribes")
+
+
+    def test_total_unsubscribe_property(self):
+
+        test_report = Unsubscribes(U)
+        total_ad_based_unsubs = test_report.total_ad_based_unsubscribes
+        self.assertEqual(total_ad_based_unsubs, 133301, msg="Should be equal")
+
+
+if __name__ == '__main__':
+    unittest.main()
+
