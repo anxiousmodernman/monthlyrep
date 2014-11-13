@@ -12,7 +12,6 @@ class TestUnsubReport(unittest.TestCase):
         # Here we are testing that test_report is an instance of class Unsubscribes
         self.assertIsInstance(test_report, Unsubscribes, msg="Should be an instance of class Unsubscribes")
 
-
     def test_total_unsubscribe_property(self):
 
         test_report = Unsubscribes(U)
