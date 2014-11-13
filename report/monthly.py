@@ -8,3 +8,4 @@ class Unsubscribes:
     def __init__(self, file_input, sheet='Sheet1'):
         self._data = pd.read_excel(file_input, sheet=sheet)
 
+

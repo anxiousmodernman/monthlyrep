@@ -18,7 +18,7 @@ def industry(df):
 
 if __name__ == '__main__':
     data = load(U)
-    ad = sub_ad(data)
+    ad = sub_ad(data)  # subset the report to just ad based briefs
     ad_points = combine(ad)
     main_points = combine(data)
     data_summary = pd.DataFrame(concat([ad_points, main_points]))
