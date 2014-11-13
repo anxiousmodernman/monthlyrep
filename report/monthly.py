@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-class BaseReport(object):
+class ReportBase(object):
 
     def __init__(self, file_input, sheet='Sheet1'):
         self._data = pd.read_excel(file_input, sheet=sheet)
@@ -13,7 +13,7 @@ class BaseReport(object):
         return ad_based
 
 
-class Unsubscribes(BaseReport):
+class Unsubscribes(ReportBase):
     """Class to represent data and computations for monthly unsubscribes report.
     """
 
