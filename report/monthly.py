@@ -1,25 +1,34 @@
+import pandas as pd
 
 
-class BaseReport(object):
+class ReportBase(object):
 
-    def __init__(self):
-        self.name = 'Hello'
+    def __init__(self, file_input, sheet='Sheet1'):
+        self._data = pd.read_excel(file_input, sheet=sheet)
 
-
-class ProfileCompletion(BaseReport):
-
-    def __init__(self):
-        super(ProfileCompletion, self).__init__()
-
-
-class OpenClick(BaseReport):
-
-    def __init__(self):
-        super(OpenClick, self).__init__()
+    def _subset_ad_based(self):
+        ad_based = self._data
+        ad_based['Brief Tags'] = ad_based['Brief Tags'].fillna(value="Undefined")
+        ad_based = self._data[self._data['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo Enabled.*)")]
+        return ad_based
 
 
-class Unsubscribes(BaseReport):
+class Unsubscribes(ReportBase):
+    """Class to represent data and computations for monthly unsubscribes report.
+    """
 
-    def __init__(self, data):
-        super(Unsubscribes, self).__init__()
-        self._data = data
+    def __init__(self, file_input, sheet='Sheet1'):
+        super(Unsubscribes, self).__init__(file_input, sheet)
+
+    @property
+    def total_unsubscribes(self):
+        pass
+
+    @property
+    def total_ad_based_unsubscribes(self):
+        subsetted = self._subset_ad_based()
+        return subsetted['Total Unsubs'].sum()
+
+
+
+
