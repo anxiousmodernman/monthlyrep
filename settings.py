@@ -7,7 +7,7 @@ Environment settings file.
 Adjust USER to setup your environment variables.
 """
 
-USER = 'Anna_Mac'
+USER = 'Coleman'
 
 print 'Environment settings loaded for %s' % USER
 

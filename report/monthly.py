@@ -19,17 +19,16 @@ class Unsubscribes(ReportBase):
 
     def __init__(self, file_input, sheet='Sheet1'):
         super(Unsubscribes, self).__init__(file_input, sheet)
+        self._industry_subs = self._compute_subs_by_industry()
 
     @property
     def total_unsubscribes(self):
         pass
 
-
     @property
     def total_ad_based_unsubscribes(self):
         subsetted = self._subset_ad_based()
         return subsetted['Total Unsubs'].sum()
-
 
     @property
     def beginning_subs_ad_based(self):
@@ -37,11 +36,18 @@ class Unsubscribes(ReportBase):
         bs = ad['Beginning Subs'].sum()
         return bs
 
-
     def ad_based_sum(self, name):
         ad = self._subset_ad_based()
         bs = ad[name].sum()
         return bs
+
+    def _compute_subs_by_industry(self):
+        # todo: put these column names in a dict of constants?
+        industry_col = 'Primary Sub-category Category'
+        subs_col = 'Ending Subs'
+        # we can access self._data internally
+        computed = self._data.groupby([industry_col])[subs_col].sum()
+        return computed
 
     # def field_sum(self, names, new_name):
     #     for i in names
