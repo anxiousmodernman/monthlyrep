@@ -9,11 +9,13 @@ class ReportBase(object):
         self._data = pd.read_excel(file_input, sheet=sheet)
         self.input_filename = file_input
 
+
     def _subset_ad_based(self):
         data = self._data
         data['Brief Tags'] = data['Brief Tags'].fillna(value="Undefined")
         ad_based = self._data[self._data['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo Enabled.*)")]
         return ad_based
+
 
 
 class Unsubscribes(ReportBase):
@@ -25,25 +27,6 @@ class Unsubscribes(ReportBase):
         self._industry_subs = self._compute_subs_by_industry()
         self._unsubs_by_category = self._compute_unsubs_by_category()
 
-    @property
-    def total_unsubscribes(self):
-        pass
-
-    @property
-    def total_ad_based_unsubscribes(self):
-        subsetted = self._subset_ad_based()
-        return subsetted['Total Unsubs'].sum()
-
-    @property
-    def beginning_subs_ad_based(self):
-        ad = self._subset_ad_based()
-        bs = ad['Beginning Subs'].sum()
-        return bs
-
-    def ad_based_sum(self, name):
-        ad = self._subset_ad_based()
-        bs = ad[name].sum()
-        return bs
 
     def _compute_subs_by_industry(self):
         # todo: put these column names in a dict of constants?
@@ -53,6 +36,7 @@ class Unsubscribes(ReportBase):
         computed = self._data.groupby([industry_col])[subs_col].sum()
         return pd.DataFrame(computed)
 
+
     def _compute_unsubs_by_category(self):
         ad_based = self._subset_ad_based()
         all_briefs_summary = self._summarize_unsubs(self._data)
@@ -60,6 +44,14 @@ class Unsubscribes(ReportBase):
         combined = pd.DataFrame(concat([ad_based_summary, all_briefs_summary]))
         combined.columns = ['Ad Based', 'Total']
         return combined
+
+
+    def render_excel(self, output_file):
+        writer = pd.ExcelWriter(output_file)
+        self._unsubs_by_category.to_excel(writer, 'unsubs')
+        self._industry_subs.to_excel(writer, 'industry')
+        print 'Writing output file to directory: %s' % os.path.abspath('.')
+        writer.save()
 
     @staticmethod
     def _summarize_unsubs(df):
@@ -89,32 +81,133 @@ class Unsubscribes(ReportBase):
         summarized = pd.DataFrame(metrics)
         return summarized
 
+
+
+class Opens(ReportBase):
+    """Class to represent data and computations for monthly open click report.
+    """
+
+    def __init__(self, file_input, sheet='Sheet1'):
+        super(Opens, self).__init__(file_input, sheet)
+        self._opens_by_category = self._compute_opens_by_category()
+
+
+    def _subset_main(self):
+        main = self._data[self._data['Brief'] == self._data['Parent Brief']]
+        return main
+
+    def _compute_opens_by_category(self):
+
+        main = self._subset_main()
+        main_briefs_summary = self._summarize_opens(main)
+        ad_based = self._subset_ad_based(main)
+        ad_based_summary = self._summarize_opens(ad_based)
+        combined = pd.DataFrame(concat([ad_based_summary, main_briefs_summary]))
+        combined.columns = ['Ad Based', 'Total']
+
+        return combined
+
     def render_excel(self, output_file):
         writer = pd.ExcelWriter(output_file)
-        self._unsubs_by_category.to_excel(writer, 'unsubs')
-        self._industry_subs.to_excel(writer, 'industry')
+        self._opens_to_category.to_excel(writer, 'opens')
         print 'Writing output file to directory: %s' % os.path.abspath('.')
         writer.save()
 
 
+   @staticmethod
+    def _summarize_opens(df):
+
+        cols = [
+            'Sent',
+            'Opens',
+            'Clicks',
+            'Starting Subs',
+            'Ending Subs',
+        ]
+        metrics = df[cols].sum()
+        open_rate = float(df['Opens'].sum())/df['Sent'].sum()
+        click_rate = float(df['Clicks'].sum())/df['Opens'].sum()
+        summary = pd.Series(metrics).append(pd.Series([open_rate, click_rate]))
+        summarized = pd.DataFrame(summary)
+
+        return summarized
+
+
+class Profile(ReportBase):
+    """Class to represent data and computations for monthly profile completion numbers.
+    """
+
+    def __init__(self, file_input, sheet='Sheet1'):
+        super(Profile, self).__init__(file_input, sheet)
+        self._profile_by_category = self._compute_profile_by_category()
+
+    def _join_fields(self, fields):
+        df_new = pd.merge(self._data, fields, left_on='Brief', right_on='Brief', how='left')
+        field_null = fields[fields['NumFields'].isnull()]
+            if len(field_null) > 0:
+                print field_null.Brief
+            else:
+                print 'no new briefs'
+                return df_new
+
+
+    def _compute_profile_by_category(self):
+
+        data = self._join_fields(self, fields)
+        ad_based = self._subset_ad_based(data)
+        all_briefs_summary = self._summarize_profile(data)
+        ad_based_summary = self._summarize_profile(ad_based)
+        combined = pd.DataFrame(concat([ad_based_summary, all_briefs_summary]))
+        combined.columns = ['Ad Based', 'Total']
+
+        return combined
 
 
 
-        # def field_sum(self, names, new_name):
-        #     for i in names
-        #
-        #     return
-
-        #
-        # def _industry(self):
-        #     data = self._data
-        #     ad_based = total_ad_based_unsubscribes(data)
-        #     industry = ad_based.groupby(['Primary Sub-category Category'])['Ending Subs'].sum()
-        #     return industry
+    @staticmethod
+    def _total_subs_with_all(df):
+        ref = df.columns.get_loc("Subs with NO norm data")
+        df['NumFields_I'] = df['NumFields'].astype(int)
+        df['ALLSUBSALL'] = df.apply(lambda r: r[ref + r['NumFields_I']:ref + 6].sum(), axis=1) # for every row
+        # find starting row (ref) and add the number of fields to it, then sum the difference from ref + 6
+        total_subs_with_all = df['ALLSUBSALL'].sum()
+        return total_subs_with_all
 
 
+    @staticmethod
+    def _total_possible_points(df):
+        df['total_possible_points'] = df.NumFields * df["Total Subs"]
+        total_possible_points = df['total_possible_points'].sum()
+        return total_possible_points
 
 
+    @staticmethod
+    def _total_data_points(df):
+        df['TotalDataPoints'] = df["Subs with one field"] + df["Subs with two fields"] * 2 + df["Subs with three fields"] * 3 + df["Subs with four fields"] * 4 + df["Subs with ALL norm data"] * 5
+        total_data_points = df['TotalDataPoints'].sum()
+        return total_data_points
+
+
+     @staticmethod
+    def _total_subs(df):
+        total_subs = df['Total Subs'].sum()
+        return total_subs
+
+
+    @staticmethod
+    def _summarize_profile(df):
+
+        subs_all = _total_subs_with_all(df)/_total_subs(df)
+        profile_completion = _total_data_points(df)/_total_possible_points(df)
+        summarized = pd.Series([subs_all, profile_completion], index=['Subs with All', 'Profile Completion'], name=text)
+
+        return summarized
+
+    def render_excel(self, output_file):
+        writer = pd.ExcelWriter(output_file)
+        self._profile_by_category.to_excel(writer, 'opens')
+        print 'Writing output file to directory: %s' % os.path.abspath('.')
+        writer.save()
 
 
 

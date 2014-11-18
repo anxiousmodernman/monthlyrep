@@ -1,11 +1,13 @@
 import sys
 import argparse
 
-from report.monthly import Unsubscribes
+from report.monthly import Unsubscribes, Opens
 
 
 def do_open_click(filename):
-    # todo
+    report = Opens(filename)
+    output_filename = 'processed_opens.xls'  # todo generate better names
+    report.render_excel(output_filename)
     pass
 
 

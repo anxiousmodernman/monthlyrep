@@ -32,6 +32,7 @@ if USER == 'Anna':
     SHEET_OC_PROCESSED = 'monthly_sent_open_click_report_14' + str(today.month) + '03_processed.xls'
 
     OC = BASEPATH + FOLDER_OC + SHEET_OC
+    O = 'C:\Users\anna\Dropbox\Product\ALLTHEDATA\Open_rates_clicks\2014_11_opens_clicks\monthly_sent_open_click_report_141103.xls'
 
     FOLDER_U= 'Unsubscribes_opt_outs\\' + folder_date + '\\'
     SHEET_U = 'monthly_unsub_dashboard_14' + str(today.month) + '03.xls'
