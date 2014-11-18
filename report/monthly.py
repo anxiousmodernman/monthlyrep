@@ -45,7 +45,7 @@ class Unsubscribes(ReportBase):
         combined.columns = ['Ad Based', 'Total']
         return combined
 
-
+# i think you mentioned this, but id like to move this out of each class. I will only be running these scripts together so I'd like them to all write to the same workbook
     def render_excel(self, output_file):
         writer = pd.ExcelWriter(output_file)
         self._unsubs_by_category.to_excel(writer, 'unsubs')
@@ -82,7 +82,7 @@ class Unsubscribes(ReportBase):
         return summarized
 
 
-
+# I followed your example here, but things still arent lining up and its not 'easy to test' as you say it should be
 class Opens(ReportBase):
     """Class to represent data and computations for monthly open click report.
     """
@@ -132,7 +132,7 @@ class Opens(ReportBase):
 
         return summarized
 
-
+# this one is easier to test if you go through each staticmethod, but i didnt get to write tests for all of them
 class Profile(ReportBase):
     """Class to represent data and computations for monthly profile completion numbers.
     """
