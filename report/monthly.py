@@ -88,18 +88,16 @@ class Opens(ReportBase):
 
     def __init__(self, file_input, sheet='Sheet1'):
         super(Opens, self).__init__(file_input, sheet)
+        self.data = self._subset_main()
         self._opens_by_category = self._compute_opens_by_category()
-
-
+#todo: find out if main function is creating test discrepcancy
     def _subset_main(self):
         main = self._data[self._data['Brief'] == self._data['Parent Brief']]
         return main
 
     def _compute_opens_by_category(self):
-
-        main = self._subset_main()
-        main_briefs_summary = self._summarize_opens(main)
-        ad_based = self._subset_ad_based(main)
+        ad_based = self._subset_ad_based()
+        main_briefs_summary = self._summarize_opens(self._data)
         ad_based_summary = self._summarize_opens(ad_based)
         combined = pd.DataFrame(concat([ad_based_summary, main_briefs_summary]))
         combined.columns = ['Ad Based', 'Total']

@@ -72,6 +72,7 @@ if USER == 'Anna_Mac':
     writer = ExcelWriter(BASEPATH + folder_processed + folder_date + 'processed.xls')
     FIELDS ='/Users/annaglander/Dropbox/Product/ALLTHEDATA/Profile_completeness/numfields_brief.xlsx'
     PC = '/Users/annaglander/Dropbox/Product/ALLTHEDATA/Profile_completeness/2014_11/Profile Completeness_141103.xls'
+    O = '/Users/annaglander/Dropbox/Product/ALLTHEDATA/Open_rates_clicks/2014_11_opens_clicks/monthly_sent_open_click_report_141103.xls'
 
 
 if USER == 'Coleman':
