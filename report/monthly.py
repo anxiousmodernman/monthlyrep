@@ -9,8 +9,8 @@ class ReportBase(object):
         self._data = pd.read_excel(file_input, sheet=sheet)
         self.input_filename = file_input
 
-
     def _subset_ad_based(self):
+        #instance variable, of instance method
         data = self._data
         data['Brief Tags'] = data['Brief Tags'].fillna(value="Undefined")
         ad_based = self._data[self._data['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo Enabled.*)")]
@@ -26,7 +26,6 @@ class Unsubscribes(ReportBase):
         super(Unsubscribes, self).__init__(file_input, sheet)
         self._industry_subs = self._compute_subs_by_industry()
         self._unsubs_by_category = self._compute_unsubs_by_category()
-
 
     def _compute_subs_by_industry(self):
         # todo: put these column names in a dict of constants?
@@ -45,14 +44,14 @@ class Unsubscribes(ReportBase):
         combined.columns = ['Ad Based', 'Total']
         return combined
 
-# i think you mentioned this, but id like to move this out of each class. I will only be running these scripts together so I'd like them to all write to the same workbook
+#todo: MAKE THIS WORK. :)
     def render_excel(self, output_file):
         writer = pd.ExcelWriter(output_file)
         self._unsubs_by_category.to_excel(writer, 'unsubs')
         self._industry_subs.to_excel(writer, 'industry')
         print 'Writing output file to directory: %s' % os.path.abspath('.')
         writer.save()
-
+    #dont need an instance to call a static method
     @staticmethod
     def _summarize_unsubs(df):
 
@@ -114,7 +113,7 @@ class Opens(ReportBase):
         writer.save()
 
 
-   @staticmethod
+    @staticmethod
     def _summarize_opens(df):
 
         cols = [
@@ -132,36 +131,42 @@ class Opens(ReportBase):
 
         return summarized
 
-# this one is easier to test if you go through each staticmethod, but i didnt get to write tests for all of them
+
 class Profile(ReportBase):
     """Class to represent data and computations for monthly profile completion numbers.
     """
 
-    def __init__(self, file_input, sheet='Sheet1'):
+    def __init__(self, file_input, fields_file, sheet='Sheet1'):
         super(Profile, self).__init__(file_input, sheet)
+        #DROP DEBUGGER
+        # import pdb
+        # pdb.set_trace()
+        self._num_fields_present = pd.read_excel(fields_file)
+        self._data = self._build_profile_data()
         self._profile_by_category = self._compute_profile_by_category()
 
+    def _build_profile_data(self):
+        return self._join_fields(self._num_fields_present)
+
     def _join_fields(self, fields):
+
         df_new = pd.merge(self._data, fields, left_on='Brief', right_on='Brief', how='left')
         field_null = fields[fields['NumFields'].isnull()]
-            if len(field_null) > 0:
-                print field_null.Brief
-            else:
-                print 'no new briefs'
-                return df_new
-
+        if len(field_null) > 0:
+            print field_null.Brief
+            raise Exception('new briefs required')
+        else:
+            return df_new
 
     def _compute_profile_by_category(self):
 
-        data = self._join_fields(self, fields)
-        ad_based = self._subset_ad_based(data)
-        all_briefs_summary = self._summarize_profile(data)
+        ad_based = self._subset_ad_based()
+        all_briefs_summary = self._summarize_profile(self._data)
         ad_based_summary = self._summarize_profile(ad_based)
         combined = pd.DataFrame(concat([ad_based_summary, all_briefs_summary]))
         combined.columns = ['Ad Based', 'Total']
 
         return combined
-
 
 
     @staticmethod
@@ -188,18 +193,18 @@ class Profile(ReportBase):
         return total_data_points
 
 
-     @staticmethod
+    @staticmethod
     def _total_subs(df):
         total_subs = df['Total Subs'].sum()
         return total_subs
 
 
-    @staticmethod
-    def _summarize_profile(df):
 
-        subs_all = _total_subs_with_all(df)/_total_subs(df)
-        profile_completion = _total_data_points(df)/_total_possible_points(df)
-        summarized = pd.Series([subs_all, profile_completion], index=['Subs with All', 'Profile Completion'], name=text)
+    def _summarize_profile(self, df):
+
+        subs_all = self._total_subs_with_all(df)/float(self._total_subs(df))
+        profile_completion = self._total_data_points(df)/float(self._total_possible_points(df))
+        summarized = pd.Series([subs_all, profile_completion], index=['Subs with All', 'Profile Completion'])
 
         return summarized
 

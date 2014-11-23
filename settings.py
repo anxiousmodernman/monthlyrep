@@ -7,7 +7,7 @@ Environment settings file.
 Adjust USER to setup your environment variables.
 """
 
-USER = 'Coleman'
+USER = 'Anna_Mac'
 
 print 'Environment settings loaded for %s' % USER
 
@@ -52,10 +52,10 @@ if USER == 'Anna_Mac':
     FOLDER_PC = 'Profile_completeness\\' + folder_date + '\\'
     SHEET_PC = 'Profile Completeness_14' + str(today.month) + '03.xls'
     SHEET_PC_PROCESSED = 'Profile Completeness_14' + str(today.month) + '03_processed.xls'
-    FIELDS = 'Profile_completeness\\' + 'numfields_brief.xlsx'
+    # FIELDS = 'Profile_completeness\\' + 'numfields_brief.xlsx'
 
-    PC = BASEPATH + FOLDER_PC + SHEET_PC
-    FIELDS_PATH = BASEPATH + FIELDS
+    # PC = BASEPATH + FOLDER_PC + SHEET_PC
+    # FIELDS_PATH = BASEPATH + FIELDS
 
     FOLDER_OC = 'Open_rates_clicks\\' + folder_date + '_opens_clicks\\'
     SHEET_OC = 'monthly_sent_open_click_report_14' + str(today.month) + '03.xls'
@@ -70,7 +70,8 @@ if USER == 'Anna_Mac':
     # U = BASEPATH + FOLDER_U + SHEET_U
     U = '/Users/annaglander/Dropbox/Product/ALLTHEDATA/Unsubscribes_opt_outs/2014_11/monthly_unsub_dashboard_141103.xls'
     writer = ExcelWriter(BASEPATH + folder_processed + folder_date + 'processed.xls')
-
+    FIELDS ='/Users/annaglander/Dropbox/Product/ALLTHEDATA/Profile_completeness/numfields_brief.xlsx'
+    PC = '/Users/annaglander/Dropbox/Product/ALLTHEDATA/Profile_completeness/2014_11/Profile Completeness_141103.xls'
 
 
 if USER == 'Coleman':
