@@ -90,7 +90,7 @@ class Opens(ReportBase):
         super(Opens, self).__init__(file_input, sheet)
         self.data = self._subset_main()
         self._opens_by_category = self._compute_opens_by_category()
-#todo: find out if main function is creating test discrepcancy
+#todo: find out if main function is creating test discrepcency
     def _subset_main(self):
         main = self._data[self._data['Brief'] == self._data['Parent Brief']]
         return main
@@ -122,8 +122,8 @@ class Opens(ReportBase):
             'Ending Subs',
         ]
         metrics = df[cols].sum()
-        open_rate = float(df['Opens'].sum())/df['Sent'].sum()
-        click_rate = float(df['Clicks'].sum())/df['Opens'].sum()
+        open_rate = float(metrics['Opens'])/metrics['Sent']
+        click_rate = float(metrics['Clicks'])/metrics['Opens']
         summary = pd.Series(metrics).append(pd.Series([open_rate, click_rate]))
         summarized = pd.DataFrame(summary)
 

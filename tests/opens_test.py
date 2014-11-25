@@ -16,10 +16,12 @@ class OpensTest(unittest.TestCase):
         # http://stackoverflow.com/questions/16729574/how-to-get-a-value-from-a-cell-of-a-data-frame
         print internal_df
 
-        value = internal_df.at['Ending Subs', 'Ad Based']
-        self.assertEqual(value, 5122371)
+        value = internal_df.at['Sent', 'Total']
+        self.assertEqual(value, 114318482)
 
 
 
 if __name__ == '__main__':
     unittest.main()
+
+
