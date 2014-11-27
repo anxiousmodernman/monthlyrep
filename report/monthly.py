@@ -2,6 +2,43 @@ import os
 import pandas as pd
 from shared import concat
 
+
+class CombinedReportWriter(object):
+
+    def __init__(self, unsub=None, opens=None, profile=None):
+        # first, validate the arguments
+        self._validate_args(unsub, opens, profile)
+
+        self._unsub = unsub
+        self._open_rate = opens
+        self._profile = profile
+
+    def save_xls(self, path=None):
+        if path is None:
+            path = 'default_filename.xls'  # todo: still gotta do better default filenames
+        writer = pd.ExcelWriter(path)
+        # write unsubs
+        self._unsub._unsubs_by_category.to_excel(writer, 'unsubs')
+        self._unsub._industry_subs.to_excel(writer, 'industry')
+        # write opens
+        self._open_rate._opens_by_category.to_excel(writer, 'opens')
+        # write profile
+        self._profile._profile_by_category.to_excel(writer, 'profile')
+        print 'Writing output file to directory: %s' % os.path.abspath('.')
+        writer.save()
+
+    @staticmethod
+    def _validate_args(unsub_rep, open_rate_rep, profile_comp_rep):
+        """Ensure all argments to CombinedReportWriter constructor are the correct type.
+        """
+        if not isinstance(unsub_rep, Unsubscribes):
+            raise TypeError('Expected type Unsubscribes but got %s' % type(unsub_rep))
+        if not isinstance(open_rate_rep, Opens):
+            raise TypeError('Expected type Opens but got %s' % type(open_rate_rep))
+        if not isinstance(profile_comp_rep, Profile):
+            raise TypeError('Expected type Profile but got %s' % type(profile_comp_rep))
+
+
 class ReportBase(object):
 
     def __init__(self, file_input, sheet='Sheet1'):
@@ -14,21 +51,6 @@ class ReportBase(object):
         data['Brief Tags'] = data['Brief Tags'].fillna(value="Undefined")
         ad_based = self._data[self._data['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo Enabled.*)")]
         return ad_based
-
-
-class toExcel(object):
-#class to write other classes to excel
-    def __init__(self, ):
-        self._industry_subs
-        self._unsubs_by_category
-        self._opens_by_category
-        self._profile_by_category
-
-    def save_xls(list_dfs, xls_path):
-        writer = ExcelWriter(xls_path)
-        for n, df in enumerate(list_dfs):
-            df.to_excel(writer,'sheet%s' % n)
-        writer.save()
 
 
 
@@ -49,7 +71,6 @@ class Unsubscribes(ReportBase):
         computed = self._data.groupby([industry_col])[subs_col].sum()
         return pd.DataFrame(computed)
 
-
     def _compute_unsubs_by_category(self):
         ad_based = self._subset_ad_based()
         all_briefs_summary = self._summarize_unsubs(self._data)
@@ -58,14 +79,13 @@ class Unsubscribes(ReportBase):
         combined.columns = ['Ad Based', 'Total']
         return combined
 
-#todo: MAKE THIS WORK. :)
     def render_excel(self, output_file):
         writer = pd.ExcelWriter(output_file)
         self._unsubs_by_category.to_excel(writer, 'unsubs')
         self._industry_subs.to_excel(writer, 'industry')
         print 'Writing output file to directory: %s' % os.path.abspath('.')
         writer.save()
-    #dont need an instance to call a static method
+
     @staticmethod
     def _summarize_unsubs(df):
 
@@ -145,14 +165,11 @@ class Opens(ReportBase):
 
 
 class Profile(ReportBase):
-    """Class to represent data and computations for monthly profile completion numbers.
+    """Class to represent data and computations for monthly profile completion metrics.
     """
 
     def __init__(self, file_input, fields_file, sheet='Sheet1'):
         super(Profile, self).__init__(file_input, sheet)
-        #DROP DEBUGGER
-        # import pdb
-        # pdb.set_trace()
         self._num_fields_present = pd.read_excel(fields_file)
         self._data = self._build_profile_data()
         self._profile_by_category = self._compute_profile_by_category()
@@ -210,8 +227,6 @@ class Profile(ReportBase):
         total_subs = df['Total Subs'].sum()
         return total_subs
 
-
-
     def _summarize_profile(self, df):
 
         subs_all = self._total_subs_with_all(df)/float(self._total_subs(df))
@@ -222,7 +237,7 @@ class Profile(ReportBase):
 
     def render_excel(self, output_file):
         writer = pd.ExcelWriter(output_file)
-        self._profile_by_category.to_excel(writer, 'opens')
+        self._profile_by_category.to_excel(writer, 'profile')
         print 'Writing output file to directory: %s' % os.path.abspath('.')
         writer.save()
 

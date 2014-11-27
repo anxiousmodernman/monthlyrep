@@ -19,20 +19,20 @@ class TestUnsubReport(unittest.TestCase):
         """Prove that we can construct an instance of Unsubscribes"""
         self.assertIsInstance(self.test_report, Unsubscribes, msg="Should be an instance of class Unsubscribes")
 
-    def test_total_unsubscribe_property(self):
+    # def test_total_unsubscribe_property(self):
+    #
+    #     total_ad_based_unsubs = self.test_report.total_ad_based_unsubscribes
+    #     self.assertEqual(total_ad_based_unsubs, 133301, msg="Should be equal")
 
-        total_ad_based_unsubs = self.test_report.total_ad_based_unsubscribes
-        self.assertEqual(total_ad_based_unsubs, 133301, msg="Should be equal")
+    # def test_beginning_subs_property(self):
+    #
+    #     beginning_subs_ad_based = self.test_report.beginning_subs_ad_based
+    #     self.assertEqual(beginning_subs_ad_based, 5103303, msg="Should be equal")
 
-    def test_beginning_subs_property(self):
-
-        beginning_subs_ad_based = self.test_report.beginning_subs_ad_based
-        self.assertEqual(beginning_subs_ad_based, 5103303, msg="Should be equal")
-
-    def test_ad_based_sum(self):
-
-        ad_based_sum = self.test_report.ad_based_sum('Beginning Subs')
-        self.assertEqual(ad_based_sum, 5103303, msg="Should be equal")
+    # def test_ad_based_sum(self):
+    #
+    #     ad_based_sum = self.test_report.ad_based_sum('Beginning Subs')
+    #     self.assertEqual(ad_based_sum, 5103303, msg="Should be equal")
 
     def test_compute_unsubs_by_category(self):
 
