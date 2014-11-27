@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from shared import concat
 
-
 class ReportBase(object):
 
     def __init__(self, file_input, sheet='Sheet1'):
@@ -15,6 +14,21 @@ class ReportBase(object):
         data['Brief Tags'] = data['Brief Tags'].fillna(value="Undefined")
         ad_based = self._data[self._data['Brief Tags'].str.contains("(.*Ad Based.*|.*Voodoo Enabled.*)")]
         return ad_based
+
+
+class toExcel(object):
+#class to write other classes to excel
+    def __init__(self, ):
+        self._industry_subs
+        self._unsubs_by_category
+        self._opens_by_category
+        self._profile_by_category
+
+    def save_xls(list_dfs, xls_path):
+        writer = ExcelWriter(xls_path)
+        for n, df in enumerate(list_dfs):
+            df.to_excel(writer,'sheet%s' % n)
+        writer.save()
 
 
 
@@ -90,7 +104,7 @@ class Opens(ReportBase):
         super(Opens, self).__init__(file_input, sheet)
         self.data = self._subset_main()
         self._opens_by_category = self._compute_opens_by_category()
-#todo: find out if main function is creating test discrepcency
+
     def _subset_main(self):
         main = self._data[self._data['Brief'] == self._data['Parent Brief']]
         return main
@@ -106,7 +120,7 @@ class Opens(ReportBase):
 
     def render_excel(self, output_file):
         writer = pd.ExcelWriter(output_file)
-        self._opens_to_category.to_excel(writer, 'opens')
+        self._opens_by_category.to_excel(writer, 'opens')
         print 'Writing output file to directory: %s' % os.path.abspath('.')
         writer.save()
 

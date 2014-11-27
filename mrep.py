@@ -1,7 +1,17 @@
 import sys
 import argparse
 
-from report.monthly import Unsubscribes, Opens
+from report.monthly import Unsubscribes, Opens, Profile
+
+
+
+    # def render_excel(self, output_file):
+    #     writer = pd.ExcelWriter(output_file)
+    #     self._unsubs_by_category.to_excel(writer, 'unsubs')
+    #     self._industry_subs.to_excel(writer, 'industry')
+    #     print 'Writing output file to directory: %s' % os.path.abspath('.')
+    #     writer.save()
+
 
 
 def do_open_click(filename):
@@ -12,7 +22,9 @@ def do_open_click(filename):
 
 
 def do_profile_completion(filename):
-    # todo
+    report = Profile(filename)
+    output_filename = 'processed_profile.xls'
+    report.render_excel(output_filename)
     pass
 
 
