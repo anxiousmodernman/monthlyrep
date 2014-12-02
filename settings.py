@@ -79,6 +79,5 @@ if USER == 'Coleman':
     U = 'C:\\Users\\cmcfarland\\Dropbox\\Product\\ALLTHEDATA\\use_this\\monthly_unsub_dashboard_141103.xls'
     O = 'C:\\Users\\cmcfarland\\Dropbox\\Product\\ALLTHEDATA\\use_this\\monthly_sent_open_click_report_141103.xls'
     PC = 'C:\\Users\\cmcfarland\\Dropbox\\Product\\ALLTHEDATA\\use_this\\Profile Completeness_141103.xls'
-
-
+    FIELDS = 'C:\\Users\\cmcfarland\\Dropbox\\Product\\ALLTHEDATA\\use_this\\numfields_brief.xlsx'
 
