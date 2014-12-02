@@ -4,28 +4,16 @@ import argparse
 from report.monthly import Unsubscribes, Opens, Profile
 
 
-
-    # def render_excel(self, output_file):
-    #     writer = pd.ExcelWriter(output_file)
-    #     self._unsubs_by_category.to_excel(writer, 'unsubs')
-    #     self._industry_subs.to_excel(writer, 'industry')
-    #     print 'Writing output file to directory: %s' % os.path.abspath('.')
-    #     writer.save()
-
-
-
 def do_open_click(filename):
     report = Opens(filename)
     output_filename = 'processed_opens.xls'  # todo generate better names
     report.render_excel(output_filename)
-    pass
 
 
 def do_profile_completion(filename):
     report = Profile(filename)
     output_filename = 'processed_profile.xls'
     report.render_excel(output_filename)
-    pass
 
 
 def do_unsubs(filename):
@@ -61,9 +49,6 @@ def main(args):
     Depending on the command passed, mrep.py will hand control to a function
     that will be responsible for instantiating an instance of a particular kind
     of report, processing the data, and writing out a 'processed' Excel document.
-
-    
-
     """
     cmd_parser = argparse.ArgumentParser(description='Process monthly report files')
     cmd_parser.add_argument('command', type=str)
